@@ -16,13 +16,21 @@
   conda activate env
   ```
 * Install [pytorch](https://pytorch.org/get-started/locally/).
-* Install additional packages:
+* Install additional packages using pip:
   ```
   connected-components-3d==3.10.5
   pandas==2.1.0
+  blosc2
   ```
+* Downgrade to `numpy==1.26.4` (see [here](https://stackoverflow.com/a/78641304))
+* Downgrade to `acvl_utils==0.2` (see [here](https://discourse.slicer.org/t/totalsegmentator-failed-to-compute-results-returned-non-zero-exit-status-1/38142/9))
 * Install [nnUNETv2](https://github.com/MIC-DKFZ/nnUNet/tree/master) following the instructions on their repository.
 * Create folders `nnUNet_raw`, `nnUNet_preprocessed`, and `nnUNet_results`.
+* Modify `$CONDA_PREFIX/lib/python3.9/site-packages/nnunetv2/training/nnUNetTrainer/nnUNetTrainer.py` to add the following trainer class
+  ```
+  class nnUNetTrainerv2(nnUNetTrainer):
+    pass
+  ```
    
   
 ## Inflammation marker segmentation
@@ -33,7 +41,7 @@
 
 * Run organ segmentation inference for a whole-body scan:
   ```
-  nnUNetv2_predict -d 170680 -i path_ouput_preprocessing -o folder_out_pred -c 3d_fullres -tr nnUNetTrainer 
+  nnUNetv2_predict -d 17068 -i path_ouput_preprocessing -o folder_out_pred -c 3d_fullres -tr nnUNetTrainer 
   ```  
 * Run blob extraction, to find individual connected components, and to measure their size. Prediction on a 500x500x500 sized patch is expected to take around 13 minutes.
 * Discard elongated structures as False Positives
